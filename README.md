@@ -21,4 +21,4 @@ Galvorian Dominium to 2D desktopowa strzelanka typu run 'n gun z retro stylistyk
 
 ## Instalacja i uruchomienie
 
-- Pobierz plik .exe z [releases](https://github.com/SebaKo23/Engineer_Thesis/releases), a następnie go uruchom.
+- Pobierz i rozpakuj plik .exe z [releases](https://github.com/SebaKo23/Engineer_Thesis/releases), a następnie go uruchom.
