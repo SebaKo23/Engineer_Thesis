@@ -1,0 +1,130 @@
+[gd_scene load_steps=19 format=3 uid="uid://brdkp35t6h0gj"]
+
+[ext_resource type="Script" path="res://Scripts/boss.gd" id="1_tt75c"]
+[ext_resource type="Texture2D" uid="uid://bls0kvyyyam6g" path="res://Sprites/Boss_Idle.png" id="1_u4ont"]
+[ext_resource type="Texture2D" uid="uid://bpprfjao34sgw" path="res://Sprites/Boss_Kill.png" id="2_bogm8"]
+[ext_resource type="AudioStream" uid="uid://ccfkkxwl0unds" path="res://SFX/Explosion.wav" id="4_yofkg"]
+[ext_resource type="AudioStream" uid="uid://bjh8w1vdie6dp" path="res://SFX/DroneSpawn.wav" id="5_e6uf2"]
+[ext_resource type="AudioStream" uid="uid://d1cbcm60su6dc" path="res://SFX/BossDamage.wav" id="6_h1kh3"]
+[ext_resource type="AudioStream" uid="uid://dhkl6uhb16umj" path="res://Music/BossBattle.wav" id="7_bn2ql"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tcl4x"]
+atlas = ExtResource("1_u4ont")
+region = Rect2(0, 0, 160, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7pvs2"]
+atlas = ExtResource("1_u4ont")
+region = Rect2(160, 0, 160, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bvotp"]
+atlas = ExtResource("1_u4ont")
+region = Rect2(320, 0, 160, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0lfn3"]
+atlas = ExtResource("2_bogm8")
+region = Rect2(0, 0, 160, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hqxr5"]
+atlas = ExtResource("2_bogm8")
+region = Rect2(160, 0, 160, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ik0cu"]
+atlas = ExtResource("2_bogm8")
+region = Rect2(320, 0, 160, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tar4h"]
+atlas = ExtResource("2_bogm8")
+region = Rect2(480, 0, 160, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yap2o"]
+atlas = ExtResource("2_bogm8")
+region = Rect2(640, 0, 160, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1irrp"]
+atlas = ExtResource("2_bogm8")
+region = Rect2(800, 0, 160, 192)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3qph4"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_tcl4x")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_7pvs2")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_bvotp")
+}],
+"loop": true,
+"name": &"default",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0lfn3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hqxr5")
+}, {
+"duration": 4.0,
+"texture": SubResource("AtlasTexture_ik0cu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tar4h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yap2o")
+}, {
+"duration": 4.0,
+"texture": SubResource("AtlasTexture_1irrp")
+}],
+"loop": false,
+"name": &"kill",
+"speed": 4.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_534ik"]
+radius = 12.0
+
+[node name="Boss" type="Node2D"]
+script = ExtResource("1_tt75c")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_3qph4")
+autoplay = "default"
+
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 10
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+position = Vector2(0, -56)
+shape = SubResource("CircleShape2D_534ik")
+debug_color = Color(0.137255, 0.631373, 0.380392, 0.419608)
+
+[node name="DroneSpawner" type="Marker2D" parent="."]
+position = Vector2(0, -17)
+
+[node name="DroneSpawnTimer" type="Timer" parent="."]
+
+[node name="SoundDelayTimer" type="Timer" parent="."]
+wait_time = 1.6
+one_shot = true
+
+[node name="Explosion" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_yofkg")
+
+[node name="DroneSpawn" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_e6uf2")
+
+[node name="Damage" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_h1kh3")
+
+[node name="Battle" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_bn2ql")
+
+[connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]
+[connection signal="timeout" from="DroneSpawnTimer" to="." method="_on_drone_spawn_timer_timeout"]
+[connection signal="timeout" from="SoundDelayTimer" to="." method="_on_sound_delay_timer_timeout"]
+[connection signal="finished" from="Battle" to="." method="_on_battle_finished"]

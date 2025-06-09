@@ -1,0 +1,115 @@
+[gd_scene load_steps=15 format=3 uid="uid://dft7gk5qq53cc"]
+
+[ext_resource type="Script" path="res://Scripts/GuardDog.gd" id="1_43g13"]
+[ext_resource type="Texture2D" uid="uid://c1s2i7rqlsrdm" path="res://Sprites/Enemy1.png" id="2_j3rg2"]
+[ext_resource type="Texture2D" uid="uid://b0h42xtttnj2e" path="res://Sprites/explosion.png" id="3_bsq3w"]
+[ext_resource type="AudioStream" uid="uid://ccfkkxwl0unds" path="res://SFX/Explosion.wav" id="4_qb0p1"]
+[ext_resource type="AudioStream" uid="uid://b4ir213ka2nvs" path="res://SFX/Damage.wav" id="5_38l0o"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_848ro"]
+atlas = ExtResource("2_j3rg2")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uyrk7"]
+atlas = ExtResource("2_j3rg2")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_piku1"]
+atlas = ExtResource("2_j3rg2")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0o5o1"]
+atlas = ExtResource("2_j3rg2")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w611d"]
+atlas = ExtResource("3_bsq3w")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nqg2b"]
+atlas = ExtResource("3_bsq3w")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2mtcl"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_848ro")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uyrk7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_piku1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0o5o1")
+}],
+"loop": true,
+"name": &"default",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w611d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nqg2b")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"kill",
+"speed": 4.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7p4ou"]
+size = Vector2(16, 15)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nswga"]
+size = Vector2(20, 19)
+
+[node name="GuardDog" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 81
+script = ExtResource("1_43g13")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_2mtcl")
+animation = &"kill"
+autoplay = "default"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_7p4ou")
+
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 10
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_nswga")
+debug_color = Color(0.12549, 0.635294, 0.32549, 0.419608)
+
+[node name="FloorRayCast" type="RayCast2D" parent="."]
+position = Vector2(-4, 0)
+target_position = Vector2(0, 23)
+collision_mask = 65
+
+[node name="WallRayCast" type="RayCast2D" parent="."]
+position = Vector2(-6, 0)
+target_position = Vector2(-6, 0)
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+
+[node name="Explosion" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_qb0p1")
+
+[node name="Damage" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_38l0o")
+
+[connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]
+[connection signal="body_entered" from="HitBox" to="." method="_on_hit_box_body_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

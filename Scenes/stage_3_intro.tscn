@@ -1,0 +1,60 @@
+[gd_scene load_steps=5 format=3 uid="uid://cg85ahj0oqbw3"]
+
+[ext_resource type="Script" path="res://Scripts/Stage3Intro.gd" id="1_6akvu"]
+[ext_resource type="FontFile" uid="uid://bbpfkh42uuigb" path="res://UI/nintendo-nes-font.ttf" id="2_wytpj"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ddbf4"]
+font = ExtResource("2_wytpj")
+
+[sub_resource type="LabelSettings" id="LabelSettings_n86cr"]
+font = ExtResource("2_wytpj")
+
+[node name="Stage3Intro" type="CanvasLayer"]
+script = ExtResource("1_6akvu")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="PanelContainer"]
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="StageText" type="Label" parent="PanelContainer/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 50.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 0
+text = "STAGE 3"
+label_settings = SubResource("LabelSettings_ddbf4")
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="LocationText" type="Label" parent="PanelContainer/ColorRect"]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -222.0
+offset_top = 105.0
+offset_right = 228.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "TECHNO DOMINIUM'S LABORATORY"
+label_settings = SubResource("LabelSettings_n86cr")
+horizontal_alignment = 1
+
+[node name="SceneTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[connection signal="timeout" from="SceneTimer" to="." method="_on_scene_timer_timeout"]

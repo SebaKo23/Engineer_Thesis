@@ -1,0 +1,127 @@
+[gd_scene load_steps=12 format=3 uid="uid://bfe25kdcbtbkb"]
+
+[ext_resource type="FontFile" uid="uid://bbpfkh42uuigb" path="res://UI/nintendo-nes-font.ttf" id="1_iqn0e"]
+[ext_resource type="Script" path="res://Scripts/Continue.gd" id="1_o8h56"]
+[ext_resource type="AudioStream" uid="uid://bbf1rqpwbwa6" path="res://SFX/OptionSelect.wav" id="3_gujf1"]
+[ext_resource type="AudioStream" uid="uid://btq5fhl615ned" path="res://SFX/OptionMove.wav" id="4_xccln"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xjwg1"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_cr85h"]
+font = ExtResource("1_iqn0e")
+
+[sub_resource type="LabelSettings" id="LabelSettings_fx8wx"]
+font = ExtResource("1_iqn0e")
+
+[sub_resource type="Animation" id="Animation_yb8e0"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.1),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_q1a0e"]
+resource_name = "blink"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [Color(0, 0, 0, 1), Color(1, 1, 1, 1), Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_n31wg"]
+_data = {
+"RESET": SubResource("Animation_yb8e0"),
+"blink": SubResource("Animation_q1a0e")
+}
+
+[sub_resource type="LabelSettings" id="LabelSettings_wduh2"]
+font = ExtResource("1_iqn0e")
+
+[node name="GameOverScreen" type="CanvasLayer"]
+script = ExtResource("1_o8h56")
+metadata/_edit_use_anchors_ = true
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_top = -1.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_xjwg1")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="Rows" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 60
+alignment = 1
+
+[node name="GameOverText" type="Label" parent="PanelContainer/MarginContainer/Rows"]
+layout_mode = 2
+text = "GAME OVER"
+label_settings = SubResource("LabelSettings_cr85h")
+horizontal_alignment = 1
+
+[node name="Options" type="VBoxContainer" parent="PanelContainer/MarginContainer/Rows"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_constants/separation = 20
+
+[node name="ContinueText" type="Label" parent="PanelContainer/MarginContainer/Rows/Options"]
+layout_mode = 2
+text = "CONTINUE"
+label_settings = SubResource("LabelSettings_fx8wx")
+
+[node name="ContinueAnimation" type="AnimationPlayer" parent="PanelContainer/MarginContainer/Rows/Options/ContinueText"]
+libraries = {
+"": SubResource("AnimationLibrary_n31wg")
+}
+
+[node name="EndText" type="Label" parent="PanelContainer/MarginContainer/Rows/Options"]
+layout_mode = 2
+focus_neighbor_top = NodePath("../ContinueText")
+focus_neighbor_bottom = NodePath("../ContinueText")
+text = "END
+"
+label_settings = SubResource("LabelSettings_wduh2")
+
+[node name="EndAnimation" type="AnimationPlayer" parent="PanelContainer/MarginContainer/Rows/Options/EndText"]
+libraries = {
+"": SubResource("AnimationLibrary_n31wg")
+}
+
+[node name="ContinueTimer" type="Timer" parent="."]
+wait_time = 3.0
+
+[node name="EndTimer" type="Timer" parent="."]
+wait_time = 3.0
+
+[node name="OptionAccepted" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_gujf1")
+
+[node name="OptionChange" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_xccln")
+
+[connection signal="timeout" from="ContinueTimer" to="." method="_on_continue_timer_timeout"]
+[connection signal="timeout" from="EndTimer" to="." method="_on_end_timeout"]

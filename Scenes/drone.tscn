@@ -1,0 +1,141 @@
+[gd_scene load_steps=19 format=3 uid="uid://yi2nyaw4b0nn"]
+
+[ext_resource type="Script" path="res://Scripts/drone.gd" id="1_57ys3"]
+[ext_resource type="Texture2D" uid="uid://bw1g6wo51eu08" path="res://Sprites/Drone.png" id="1_ihbn7"]
+[ext_resource type="Texture2D" uid="uid://b0h42xtttnj2e" path="res://Sprites/explosion.png" id="3_sqcf6"]
+[ext_resource type="AudioStream" uid="uid://ccfkkxwl0unds" path="res://SFX/Explosion.wav" id="4_vamq3"]
+[ext_resource type="AudioStream" uid="uid://1vd1j1g22j56" path="res://SFX/DroneTrack.wav" id="5_rht0g"]
+[ext_resource type="AudioStream" uid="uid://b4ir213ka2nvs" path="res://SFX/Damage.wav" id="6_x6735"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bg1j8"]
+atlas = ExtResource("1_ihbn7")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8yoq1"]
+atlas = ExtResource("1_ihbn7")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_auj57"]
+atlas = ExtResource("1_ihbn7")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bo88r"]
+atlas = ExtResource("1_ihbn7")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4pgjc"]
+atlas = ExtResource("1_ihbn7")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a2m0g"]
+atlas = ExtResource("1_ihbn7")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_43l1o"]
+atlas = ExtResource("3_sqcf6")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l0rb0"]
+atlas = ExtResource("3_sqcf6")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_qo8wf"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bg1j8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8yoq1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_auj57")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bo88r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4pgjc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a2m0g")
+}],
+"loop": true,
+"name": &"default",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_43l1o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l0rb0")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"kill",
+"speed": 4.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dlqsx"]
+size = Vector2(14, 11)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ap3la"]
+size = Vector2(18, 15)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_prndh"]
+
+[node name="Drone" type="CharacterBody2D"]
+collision_layer = 4
+motion_mode = 1
+wall_min_slide_angle = 0.0
+script = ExtResource("1_57ys3")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_qo8wf")
+autoplay = "default"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1.5)
+shape = SubResource("RectangleShape2D_dlqsx")
+
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 10
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+position = Vector2(0, -1.5)
+shape = SubResource("RectangleShape2D_ap3la")
+debug_color = Color(0, 0.65098, 0.101961, 0.419608)
+
+[node name="AttackZone" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackZone"]
+scale = Vector2(10, 10)
+shape = SubResource("RectangleShape2D_prndh")
+debug_color = Color(0.996078, 0, 0.176471, 0.419608)
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_postprocessing = 1
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.5
+autostart = true
+
+[node name="Explosion" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_vamq3")
+
+[node name="DroneTrack" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_rht0g")
+
+[node name="Damage" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_x6735")
+
+[connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]
+[connection signal="body_entered" from="HitBox" to="." method="_on_hit_box_body_entered"]
+[connection signal="body_entered" from="AttackZone" to="." method="_on_attack_zone_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

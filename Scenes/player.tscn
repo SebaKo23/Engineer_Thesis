@@ -1,0 +1,131 @@
+[gd_scene load_steps=19 format=3 uid="uid://ck70hwddh53wp"]
+
+[ext_resource type="Texture2D" uid="uid://e01464bfo56l" path="res://Sprites/X-9.png" id="1_5ip58"]
+[ext_resource type="Script" path="res://Scripts/player.gd" id="1_htiq6"]
+[ext_resource type="Texture2D" uid="uid://b0h42xtttnj2e" path="res://Sprites/explosion.png" id="3_33c7e"]
+[ext_resource type="AudioStream" uid="uid://ccfkkxwl0unds" path="res://SFX/Explosion.wav" id="4_ps5cj"]
+[ext_resource type="AudioStream" uid="uid://bscv6yvxl1peh" path="res://SFX/TinyBulletSound.wav" id="4_ut7qg"]
+[ext_resource type="AudioStream" uid="uid://qgxjryeso6pa" path="res://SFX/BulletSound.wav" id="5_osavv"]
+[ext_resource type="AudioStream" uid="uid://b02p1onitr2ut" path="res://SFX/CollectGem.wav" id="7_5kcxy"]
+[ext_resource type="AudioStream" uid="uid://b0v8ep5b8ocbg" path="res://SFX/Upgrade.wav" id="8_m04pg"]
+[ext_resource type="AudioStream" uid="uid://q528xlcp3vl8" path="res://SFX/Jump.wav" id="9_5tjws"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0xklx"]
+atlas = ExtResource("1_5ip58")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q2whx"]
+atlas = ExtResource("1_5ip58")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7c730"]
+atlas = ExtResource("1_5ip58")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1b0cw"]
+atlas = ExtResource("1_5ip58")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2qojx"]
+atlas = ExtResource("3_33c7e")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3i2u1"]
+atlas = ExtResource("3_33c7e")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gi5yx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0xklx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q2whx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7c730")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1b0cw")
+}],
+"loop": true,
+"name": &"default",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2qojx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3i2u1")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"kill",
+"speed": 4.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yvis2"]
+size = Vector2(16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ewbfh"]
+size = Vector2(18, 18)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 49
+script = ExtResource("1_htiq6")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_gi5yx")
+autoplay = "default"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_yvis2")
+
+[node name="BulletPoint" type="Marker2D" parent="."]
+position = Vector2(10, 0)
+
+[node name="InvicibilityTime" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="FireRateTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+shape = SubResource("RectangleShape2D_ewbfh")
+debug_color = Color(0.627451, 0.529412, 0.0431373, 0.419608)
+
+[node name="Sounds" type="Node2D" parent="."]
+
+[node name="TinyBulletSound" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("4_ut7qg")
+
+[node name="BulletSound" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("5_osavv")
+
+[node name="Explosion" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("4_ps5cj")
+
+[node name="CollectGem" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("7_5kcxy")
+
+[node name="Upgrade" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("8_m04pg")
+
+[node name="Jump" type="AudioStreamPlayer" parent="Sounds"]
+stream = ExtResource("9_5tjws")
+
+[connection signal="timeout" from="InvicibilityTime" to="." method="_on_invicibility_time_timeout"]
+[connection signal="timeout" from="FireRateTimer" to="." method="_on_fire_rate_timer_timeout"]
+[connection signal="body_entered" from="HitBox" to="." method="_on_hit_box_body_entered"]
+[connection signal="body_exited" from="HitBox" to="." method="_on_hit_box_body_exited"]

@@ -1,0 +1,28 @@
+[gd_scene load_steps=4 format=3 uid="uid://4rk6fjiau546"]
+
+[ext_resource type="Script" path="res://Scripts/XPGem.gd" id="1_apd3b"]
+[ext_resource type="Texture2D" uid="uid://ducyq3gbl4d6m" path="res://Sprites/XPGem.png" id="2_yutub"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xky4a"]
+size = Vector2(12, 12)
+
+[node name="XPGem" type="Node2D"]
+script = ExtResource("1_apd3b")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_yutub")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 32
+collision_mask = 18
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_xky4a")
+
+[node name="LifeTimeTimer" type="Timer" parent="."]
+
+[node name="FloorRayCast" type="RayCast2D" parent="."]
+target_position = Vector2(0, 10)
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="timeout" from="LifeTimeTimer" to="." method="_on_life_time_timer_timeout"]

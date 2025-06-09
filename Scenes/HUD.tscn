@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=3 uid="uid://3l6hvxor7e1i"]
+
+[ext_resource type="Script" path="res://Scripts/HUD.gd" id="1_g1m2h"]
+[ext_resource type="Texture2D" uid="uid://dqcshawc1201q" path="res://Sprites/Rest.png" id="2_et86a"]
+[ext_resource type="FontFile" uid="uid://bbpfkh42uuigb" path="res://UI/nintendo-nes-font.ttf" id="3_f7aer"]
+[ext_resource type="Texture2D" uid="uid://ducyq3gbl4d6m" path="res://Sprites/XPGem.png" id="3_k4o5n"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_caj47"]
+font = ExtResource("3_f7aer")
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_cil32"]
+font = ExtResource("3_f7aer")
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_g1m2h")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Rests" type="HFlowContainer" parent="Control"]
+layout_mode = 0
+offset_right = 69.0
+offset_bottom = 16.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="RestIcon" type="TextureRect" parent="Control/Rests"]
+layout_mode = 2
+texture = ExtResource("2_et86a")
+
+[node name="RestText" type="Label" parent="Control/Rests"]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_caj47")
+
+[node name="XP" type="HFlowContainer" parent="Control"]
+layout_mode = 0
+offset_left = 569.0
+offset_right = 633.0
+offset_bottom = 16.0
+
+[node name="XPIcon" type="TextureRect" parent="Control/XP"]
+layout_mode = 2
+texture = ExtResource("3_k4o5n")
+
+[node name="XPText" type="Label" parent="Control/XP"]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_cil32")
